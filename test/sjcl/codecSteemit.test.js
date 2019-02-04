@@ -1,12 +1,12 @@
-new sjcl.test.TestCase("steemit signature test vectors", function(cb) {
+new sjcl.test.TestCase("scoopmedia signature test vectors", function(cb) {
 
   var hash = sjcl.hash.sha256.hash([]);
   var self = this;
 
-  sjcl.test.vector.steemitsig.forEach(function(fixture) {
+  sjcl.test.vector.scoopmediasig.forEach(function(fixture) {
   
-    var secretKey = sjcl.codec.steemit.deserializePrivateKey(fixture.secretKey);
-    var publicKey = sjcl.codec.steemit.deserializePublicKey(fixture.publicKey);
+    var secretKey = sjcl.codec.scoopmedia.deserializePrivateKey(fixture.secretKey);
+    var publicKey = sjcl.codec.scoopmedia.deserializePublicKey(fixture.publicKey);
 
     fixture.signatures.forEach(function(signature) {
       var k = new sjcl.bn(signature.k);
@@ -16,14 +16,14 @@ new sjcl.test.TestCase("steemit signature test vectors", function(cb) {
       var sig = sjcl.bitArray.concat(r.toBits(256), s.toBits(256));
       publicKey.verify(hash, sig);
 
-      var generatedSig = sjcl.codec.steemit.signRecoverably(secretKey, hash, 0, k);
+      var generatedSig = sjcl.codec.scoopmedia.signRecoverably(secretKey, hash, 0, k);
 
-      var recoveredPublicKey = sjcl.codec.steemit.recoverPublicKey(hash, generatedSig);
+      var recoveredPublicKey = sjcl.codec.scoopmedia.recoverPublicKey(hash, generatedSig);
 
       publicKey.verify(hash, sjcl.bitArray.bitSlice(generatedSig, 8));
 
       self.require(
-        fixture.publicKey === sjcl.codec.steemit.serializePublicKey(recoveredPublicKey),
+        fixture.publicKey === sjcl.codec.scoopmedia.serializePublicKey(recoveredPublicKey),
         'our recovered public key is the right one'
       );
 
@@ -35,15 +35,15 @@ new sjcl.test.TestCase("steemit signature test vectors", function(cb) {
 });
 
 
-new sjcl.test.TestCase("steemit signature core functionality", function(cb) {
+new sjcl.test.TestCase("scoopmedia signature core functionality", function(cb) {
    
   var keys = {
-    sec: sjcl.codec.steemit.deserializePrivateKey("5JamTPvZyQsHf8c2pbN92F1gUY3sJkpW3ZJFzdmfbAJPAXT5aw3"),
-    pub: sjcl.codec.steemit.deserializePublicKey("STM5SKxjN1YdrFLgoPcp9KteUmNVdgE8DpTPC9sF6jbjVqP9d2Utq")
+    sec: sjcl.codec.scoopmedia.deserializePrivateKey("5JamTPvZyQsHf8c2pbN92F1gUY3sJkpW3ZJFzdmfbAJPAXT5aw3"),
+    pub: sjcl.codec.scoopmedia.deserializePublicKey("SCP5SKxjN1YdrFLgoPcp9KteUmNVdgE8DpTPC9sF6jbjVqP9d2Utq")
   };
  
   var fakehash = sjcl.hash.sha256.hash([1]);
-  var sig = sjcl.codec.steemit.signRecoverably(keys.sec, fakehash, 0, new sjcl.bn(19));
+  var sig = sjcl.codec.scoopmedia.signRecoverably(keys.sec, fakehash, 0, new sjcl.bn(19));
   this.require(
     keys.pub.verify(fakehash, sjcl.bitArray.bitSlice(sig, 8)),
     'signature passes verification'
@@ -52,32 +52,32 @@ new sjcl.test.TestCase("steemit signature core functionality", function(cb) {
   cb();
 });
 
-new sjcl.test.TestCase("steemit key codec tests", function (cb) {
+new sjcl.test.TestCase("scoopmedia key codec tests", function (cb) {
  
   var testValues = [{
     username: "username",
     password: "password",
     role: "active",
     sec: "5JamTPvZyQsHf8c2pbN92F1gUY3sJkpW3ZJFzdmfbAJPAXT5aw3",
-    pub: "STM5SKxjN1YdrFLgoPcp9KteUmNVdgE8DpTPC9sF6jbjVqP9d2Utq"
+    pub: "SCP5SKxjN1YdrFLgoPcp9KteUmNVdgE8DpTPC9sF6jbjVqP9d2Utq"
   }];
 
   for (var i = 0; i < testValues.length; i++) {
     var testValue = testValues[i];
 
-    var keys = sjcl.codec.steemit.keysFromPassword(
+    var keys = sjcl.codec.scoopmedia.keysFromPassword(
       testValue.username,
       testValue.password
     );
 
-    var serializedSec = sjcl.codec.steemit.serializePrivateKey(keys[testValue.role].sec);
-    var serializedPub = sjcl.codec.steemit.serializePublicKey(keys[testValue.role].pub);
+    var serializedSec = sjcl.codec.scoopmedia.serializePrivateKey(keys[testValue.role].sec);
+    var serializedPub = sjcl.codec.scoopmedia.serializePublicKey(keys[testValue.role].pub);
 
     this.require(testValue.sec == serializedSec, 'secret key: generated ' + serializedSec + ', expected ' + testValue.sec);
     this.require(testValue.pub == serializedPub, 'public key: generated ' + serializedPub + ', expected ' + testValue.pub);
   
     // on deserialization we should expect to recover both points of the public key
-    var deserializedPublicKey = sjcl.codec.steemit.deserializePublicKey(serializedPub);
+    var deserializedPublicKey = sjcl.codec.scoopmedia.deserializePublicKey(serializedPub);
     this.require(
       sjcl.bitArray.equal(
         deserializedPublicKey.get().x,
@@ -94,7 +94,7 @@ new sjcl.test.TestCase("steemit key codec tests", function (cb) {
     );
 
     // on deserialization the secret key should be the same
-    var deserializedPrivateKey = sjcl.codec.steemit.deserializePrivateKey(serializedSec);
+    var deserializedPrivateKey = sjcl.codec.scoopmedia.deserializePrivateKey(serializedSec);
     this.require(
       sjcl.bitArray.equal(
         deserializedPrivateKey.get(),

@@ -3,8 +3,8 @@
     /* global require */
     factory(exports);
   } else {
-    root.steemit = root.steemit || {};
-    factory((root.steemit.sjcl = {}));
+    root.scoopmedia = root.scoopmedia || {};
+    factory((root.scoopmedia.sjcl = {}));
   }
 })(this, function(exports) {
 

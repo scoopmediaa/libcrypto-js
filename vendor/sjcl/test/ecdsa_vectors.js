@@ -1,8 +1,8 @@
 /* Official ECDSA test vectors.
  *
  * Source:
- * http://csrc.nist.gov/groups/STM/cavp/index.html
- * http://csrc.nist.gov/groups/STM/cavp/documents/dss/186-3ecdsatestvectors.zip
+ * http://csrc.nist.gov/groups/SCP/cavp/index.html
+ * http://csrc.nist.gov/groups/SCP/cavp/documents/dss/186-3ecdsatestvectors.zip
  */
 
 sjcl.test.vector.ecdsa = {
